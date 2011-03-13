@@ -2,7 +2,12 @@ require 'spec_helper'
 
 describe User do
   before(:each) do
-    @attr = { :name => 'Example User', :email => 'user@example.com' }
+    @attr = {
+      :name                  => 'Example User',
+      :email                 => 'user@example.com',
+      :password              => 'foobar',
+      :password_confirmation => 'foobar'
+    }
   end
 
   it "should create a new instance given valid attributes" do
@@ -53,5 +58,31 @@ describe User do
     User.create! @attr.merge(:email => address)
     user = User.new @attr
     user.should_not be_valid
+  end
+
+  describe "password validations" do
+    it "should require a password" do
+      user = User.new @attr.merge(:password => '', :password_confirmation => '')
+      user.should_not be_valid
+    end
+
+    it "should require a matching password confirmation" do
+      user = User.new @attr.merge(:password_confirmation => 'invalid')
+      user.should_not be_valid
+    end
+
+    it "should reject short passwords" do
+      password = 'a' * 5
+      user = User.new @attr.merge(:password => password,
+                                  :password_confirmation => password)
+      user.should_not be_valid
+    end
+
+    it "should reject long passwords" do
+      password = 'a' * 41
+      user = User.new @attr.merge(:password => password,
+                                  :password_confirmation => password)
+      user.should_not be_valid
+    end
   end
 end
