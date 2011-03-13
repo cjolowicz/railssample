@@ -40,4 +40,18 @@ describe User do
       user.should_not be_valid
     end
   end
+
+  it "should reject duplicate email addresses" do
+    # Put a user with given email address into the database.
+    User.create! @attr
+    user = User.new @attr
+    user.should_not be_valid
+  end
+
+  it "should reject email addresses identical up to case" do
+    address = @attr[:email].upcase
+    User.create! @attr.merge(:email => address)
+    user = User.new @attr
+    user.should_not be_valid
+  end
 end
