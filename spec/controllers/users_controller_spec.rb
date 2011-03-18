@@ -223,5 +223,21 @@ describe UsersController do
         response.should redirect_to(signin_path)
       end
     end
+
+    describe "for signed-in users" do
+      before(:each) do
+        test_sign_in Factory(:user, :email => 'invalid@example.com')
+      end
+
+      it "should require matching users for 'edit'" do
+        get :edit, :id => @user
+        response.should redirect_to(root_path)
+      end
+
+      it "should require matching users for 'update'" do
+        put :update, :id => @user, :user => {}
+        response.should redirect_to(root_path)
+      end
+    end
   end
 end
