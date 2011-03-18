@@ -137,6 +137,16 @@ td.sidebar {
   margin-bottom: -15px;
 }
 
+/* Users page */
+
+ul.users {
+    margin-top: 1em;
+}
+
+.users li {
+    list-style: none;
+}
+
 /* Forms */
 
 div.field, div.actions {
