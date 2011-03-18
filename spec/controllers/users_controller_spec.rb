@@ -240,4 +240,42 @@ describe UsersController do
       end
     end
   end
+
+  describe "GET 'index'" do
+    describe "for non-signed-in users" do
+      it "should deny access" do
+        get :index
+        response.should redirect_to(signin_path)
+        flash[:notice].should =~ /sign in/i
+      end
+    end
+
+    describe "for signed-in users" do
+      before(:each) do
+        first  = Factory(:user)
+        second = Factory(:user, :name => 'Jane Doe', :email => 'jane.doe@example.com')
+        third  = Factory(:user, :name => 'John Doe', :email => 'john.doe@example.com')
+
+        @users = [first, second, third]
+        @user  = test_sign_in first
+      end
+
+      it "should be successful" do
+        get :index
+        response.should be_success
+      end
+
+      it "should have the right title" do
+        get :index
+        response.should have_selector('title', :content => 'All users')
+      end
+
+      it "should have an element for each user" do
+        get :index
+        @users.each do |user|
+          response.should have_selector('li', :content => user.name)
+        end
+      end
+    end
+  end
 end
