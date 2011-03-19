@@ -149,10 +149,16 @@ describe User do
   describe "micropost associations" do
     before(:each) do
       @user = User.create(@attr)
+      @micropost1 = Factory(:micropost, :user => @user, :created_at => 1.day.ago)
+      @micropost2 = Factory(:micropost, :user => @user, :created_at => 1.hour.ago)
     end
 
     it "should have a microposts attribute" do
       @user.should respond_to(:microposts)
+    end
+
+    it "should have the right microposts in the right order" do
+      @user.microposts.should == [@micropost2, @micropost1]
     end
   end
 end
