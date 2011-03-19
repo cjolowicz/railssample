@@ -368,6 +368,11 @@ describe UsersController do
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
       end
+
+      it "should not destroy the user itself" do
+        delete :destroy, :id => controller.current_user
+        response.should redirect_to(root_path)
+      end
     end
   end
 end
