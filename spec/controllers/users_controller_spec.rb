@@ -304,6 +304,31 @@ describe UsersController do
         response.should have_selector('a', :href => '/users?page=2', :content => '2')
         response.should have_selector('a', :href => '/users?page=2', :content => 'Next')
       end
+
+      describe "for admin users" do
+        it "should display a delete link" do
+          test_sign_in Factory(:user, :email => 'admin@example.com', :admin => true)
+          get :index
+          @users[0..2].each do |user|
+            response.should have_selector('a',
+                                          :href          => user_path(user),
+                                          :'data-method' => 'delete',
+                                          :content       => 'delete')
+          end
+        end
+      end
+
+      describe "for non-admin users" do
+        it "should not display a delete link" do
+          get :index
+          @users[0..2].each do |user|
+            response.should_not have_selector('a',
+                                              :href          => user_path(user),
+                                              :'data-method' => 'delete',
+                                              :content       => 'delete')
+          end
+        end
+      end
     end
   end
 
