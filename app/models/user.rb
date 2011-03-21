@@ -60,6 +60,14 @@ class User < ActiveRecord::Base
     return user if user.salt == salt
   end
 
+  def following?(followed)
+    relationships.find_by_followed_id(followed)
+  end
+
+  def follow!(followed)
+    relationships.create!(:followed_id => followed.id)
+  end
+
   private
     def encrypt_password
       self.salt = make_salt if new_record?
