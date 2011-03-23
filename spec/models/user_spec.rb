@@ -178,10 +178,17 @@ describe User do
         @user.feed.should include(@micropost2)
       end
 
-      it "should not include another user's microposts" do
+      it "should not include the microposts of users not being followed" do
         another = Factory(:user, :email => Factory.next(:email))
         micropost = Factory(:micropost, :user => another)
         @user.feed.should_not include(micropost)
+      end
+
+      it "should include the microposts of followed users" do
+        another = Factory(:user, :email => Factory.next(:email))
+        micropost = Factory(:micropost, :user => another)
+        @user.follow! another
+        @user.feed.should include(micropost)
       end
     end
   end
